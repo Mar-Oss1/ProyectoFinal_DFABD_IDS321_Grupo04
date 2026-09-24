@@ -7,8 +7,7 @@ bin/
 obj/
 
 # --- Crudos pesados: re-descargables segun fuentes.md ---
-BD/datos_crudos/ourairports/*.csv
-BD/datos_crudos/opensky/*.csv
+
 BD/datos_crudos/opensky/*.gz
 BD/datos_crudos/openflights/*.dat
 *.bak
