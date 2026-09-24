@@ -9,7 +9,7 @@ USE OpenFlightsDW;
 GO
 
 /* ---------- Staging OurAirports (maestro de aeropuertos) ----------
-   ENCABEZADO REAL (19 columnas, con comillas):
+   ENCABEZADO REALES:
    "id","ident","type","name","latitude_deg","longitude_deg",
    "elevation_ft","continent","iso_country","iso_region",
    "municipality","scheduled_service","icao_code","iata_code",
@@ -66,7 +66,7 @@ CREATE TABLE dbo.oa_stg_countries (
 GO
 
 /* ---------- Staging OpenSky (vuelos reales dic-2019) ----------
-   ENCABEZADO REAL (15 columnas, SIN comillas):
+   ENCABEZADO REALES:
    callsign, number, aircraft_uid, typecode, origin, destination,
    firstseen, lastseen, day,
    latitude_1, longitude_1, altitude_1,
@@ -95,13 +95,13 @@ GO
 /* ---------- Carga BULK INSERT ----------
    OurAirports: CSV con comillas, encabezado en fila 1 → FIRSTROW=2
    OpenSky:    CSV sin comillas, encabezado en fila 1 → FIRSTROW=2
-   Ambos: UTF-8 (CODEPAGE 65001). Ajusta la ruta a tu carpeta real. */
+   Ambos: UTF-8 (CODEPAGE 65001).*/
 /* OurAirports */
 BULK INSERT dbo.oa_stg_airports
 FROM 'C:\datos_dw\airports.csv'
 WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
-      ROWTERMINATOR = '0x0a',       -- NUEVO: fuerza salto Unix
-      DATAFILETYPE='char',          -- NUEVO: trata como texto plano
+      ROWTERMINATOR = '0x0a',
+      DATAFILETYPE='char',
       MAXERRORS=10000, TABLOCK);
 
 BULK INSERT dbo.oa_stg_regions
