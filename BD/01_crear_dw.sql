@@ -177,3 +177,5 @@ SELECT (SELECT COUNT(*) FROM dbo.DimFecha)      AS dim_fecha,      -- debe ser 7
        (SELECT COUNT(*) FROM dbo.FactVuelos)    AS hechos,         -- debe ser 0
        (SELECT COUNT(*) FROM dbo.xw_rutas_icao) AS xw_rutas,       -- debe ser 0
        (SELECT COUNT(*) FROM dbo.LogCarga)      AS logs; -- debe ser 0
+
+

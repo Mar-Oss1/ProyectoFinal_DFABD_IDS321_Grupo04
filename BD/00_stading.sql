@@ -176,6 +176,7 @@ ORDER BY n DESC;
 CREATE INDEX ix_oa_stg_icao ON dbo.oa_stg_airports(icao_code);
 CREATE INDEX ix_os_stg_origen ON dbo.os_stg_flights(origin);
 CREATE INDEX ix_os_stg_dest ON dbo.os_stg_flights(destination);
+CREATE INDEX ix_oa_stg_regions_code ON dbo.oa_stg_regions(code);
 
 --covertura a nivel de aeropuertos
 WITH extremos AS (
