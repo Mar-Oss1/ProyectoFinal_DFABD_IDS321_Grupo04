@@ -54,7 +54,9 @@ CREATE TABLE dbo.DimAeropuerto
     Ciudad             NVARCHAR(100),
     CodigoPais         CHAR(2),
     PaisNombre         NVARCHAR(200),
-    Contienente        CHAR(2),
+    RegionCodigo       VARCHAR(16),
+    RegionNombre       NVARCHAR(200),
+    Continente         CHAR(2),
     Latitud            DECIMAL(11, 7),
     Longitud           DECIMAL(11, 7),
     ElevationFt        INT,
@@ -69,20 +71,19 @@ GO
 
 /* DimAerolínea */
 IF OBJECT_ID('dbo.DimAerolinea') IS NULL
-CREATE TABLE DimAerolinea
+CREATE TABLE dbo.DimAerolinea
 (
     AerolineaKey INT IDENTITY (-1,1) PRIMARY KEY,
     BK_AirlineID INT NOT NULL UNIQUE,
     Nombre       NVARCHAR(200),
     Alias        NVARCHAR(200),
     IATA         VARCHAR(5),
-    IACO         VARCHAR(4),
-    Callsing     VARCHAR(50),
+    ICAO         VARCHAR(4),
+    Callsign     VARCHAR(50),
     Pais         NVARCHAR(100),
     Activa       VARCHAR(2)
 );
-CREATE UNIQUE INDEX UX_DimAerolinea_ICAO ON dbo.DimAerolinea (IACO)
-    WHERE IACO IS NOT NULL;
+CREATE UNIQUE INDEX UX_DimAerolinea_ICAO ON dbo.DimAerolinea (ICAO) WHERE ICAO IS NOT NULL;
 GO
 
 /* DimAvion */
@@ -175,4 +176,4 @@ SELECT (SELECT COUNT(*) FROM dbo.DimFecha)      AS dim_fecha,      -- debe ser 7
        (SELECT COUNT(*) FROM dbo.DimAvion)      AS dim_avion,      -- debe ser 1
        (SELECT COUNT(*) FROM dbo.FactVuelos)    AS hechos,         -- debe ser 0
        (SELECT COUNT(*) FROM dbo.xw_rutas_icao) AS xw_rutas,       -- debe ser 0
-       (SELECT COUNT(*) FROM dbo.LogCarga)      AS logs;           -- debe ser 0
+       (SELECT COUNT(*) FROM dbo.LogCarga)      AS logs; -- debe ser 0
