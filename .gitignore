@@ -1,3 +1,14 @@
-/datos_crudos/opensky/flightlist_20191201_20191231.csv
-/datos_crudos/opensky/flightlist_20191201_20191231.csv.gz
-/datos_crudos/openflights/data/
+# --- Basura de Visual Studio (cache privada, nunca se versiona) ---
+.vs/
+*.vsidx
+*.suo
+*.user
+bin/
+obj/
+
+# --- Crudos pesados: re-descargables segun fuentes.md ---
+BD/datos_crudos/ourairports/*.csv
+BD/datos_crudos/opensky/*.csv
+BD/datos_crudos/opensky/*.gz
+BD/datos_crudos/openflights/*.dat
+*.bak
