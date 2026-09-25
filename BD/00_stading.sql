@@ -1,7 +1,8 @@
---Comienzo de la creacion del DW
-
 /* ============================================================
    00 · STAGING + PARÁMETROS DE SIMULACIÓN
+   RUNBOOK: paso 2 de 5 (tras restaurar OpenFlights.bak)
+   RE-EJECUTABLE: SÍ (DROPpea y recarga; dedup post-carga)
+   DECISIONES: B-06 aterrizaje crudo · B-14 icao+gps · B-24 dedup
    ============================================================ */
 IF DB_ID('OpenFlightsDW') IS NULL CREATE DATABASE OpenFlightsDW;
 GO
@@ -9,14 +10,8 @@ USE OpenFlightsDW;
 GO
 
 /* ---------- Staging OurAirports (maestro de aeropuertos) ----------
-   ENCABEZADO REALES:
-   "id","ident","type","name","latitude_deg","longitude_deg",
-   "elevation_ft","continent","iso_country","iso_region",
-   "municipality","scheduled_service","icao_code","iata_code",
-   "gps_code","local_code","home_link","wikipedia_link","keywords"
-   DECISIÓN: incluimos icao_code + gps_code + iata_code porque
-   OpenSky nos dará ICAO en origin/destination y hay que emparejar
-   con cualquiera de los tres códigos que coincida. */
+   DECISIÓN: incluimos icao_code + gps_code + iata_code porque OpenSky
+   da ICAO en origin/destination y hay que emparejar con cualquiera. */
 IF OBJECT_ID('dbo.oa_stg_airports') IS NOT NULL DROP TABLE dbo.oa_stg_airports;
 CREATE TABLE dbo.oa_stg_airports (
     id                 INT,
@@ -40,20 +35,18 @@ CREATE TABLE dbo.oa_stg_airports (
     keywords           NVARCHAR(500)
 );
 GO
-
 IF OBJECT_ID('dbo.oa_stg_regions') IS NOT NULL DROP TABLE dbo.oa_stg_regions;
 CREATE TABLE dbo.oa_stg_regions (
-    id           INT,
-    code         VARCHAR(16),
-    local_code   VARCHAR(16),
-    name         NVARCHAR(200),
-    continent    CHAR(2),
-    iso_country  CHAR(2),
+    id             INT,
+    code           VARCHAR(16),
+    local_code     VARCHAR(16),
+    name           NVARCHAR(200),
+    continent      CHAR(2),
+    iso_country    CHAR(2),
     wikipedia_link VARCHAR(300),
-    keywords     NVARCHAR(500)
+    keywords       NVARCHAR(500)
 );
 GO
-
 IF OBJECT_ID('dbo.oa_stg_countries') IS NOT NULL DROP TABLE dbo.oa_stg_countries;
 CREATE TABLE dbo.oa_stg_countries (
     id             INT,
@@ -64,14 +57,6 @@ CREATE TABLE dbo.oa_stg_countries (
     keywords       NVARCHAR(500)
 );
 GO
-
-/* ---------- Staging OpenSky (vuelos reales dic-2019) ----------
-   ENCABEZADO REALES:
-   callsign, number, aircraft_uid, typecode, origin, destination,
-   firstseen, lastseen, day,
-   latitude_1, longitude_1, altitude_1,
-   latitude_2, longitude_2, altitude_2
-*/
 IF OBJECT_ID('dbo.os_stg_flights') IS NOT NULL DROP TABLE dbo.os_stg_flights;
 CREATE TABLE dbo.os_stg_flights (
     callsign      VARCHAR(20),
@@ -93,59 +78,70 @@ CREATE TABLE dbo.os_stg_flights (
 GO
 
 /* ---------- Carga BULK INSERT ----------
-   OurAirports: CSV con comillas, encabezado en fila 1 → FIRSTROW=2
-   OpenSky:    CSV sin comillas, encabezado en fila 1 → FIRSTROW=2
-   Ambos: UTF-8 (CODEPAGE 65001).*/
-/* OurAirports */
+   REGLA B-24: el BULK AGREGA filas. Re-ejecutar este archivo completo es
+   seguro (DROP al inicio + dedup post-carga); re-ejecutar SOLO este bloque
+   exige reset previo de las tablas. */
 BULK INSERT dbo.oa_stg_airports
 FROM 'C:\datos_dw\airports.csv'
 WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
-      ROWTERMINATOR = '0x0a',
-      DATAFILETYPE='char',
-      MAXERRORS=10000, TABLOCK);
+      ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=10000, TABLOCK);
 
 BULK INSERT dbo.oa_stg_regions
 FROM 'C:\datos_dw\regions.csv'
 WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
-      ROWTERMINATOR = '0x0a', DATAFILETYPE='char',
-      MAXERRORS=10000, TABLOCK);
+      ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=10000, TABLOCK);
 
 BULK INSERT dbo.oa_stg_countries
 FROM 'C:\datos_dw\countries.csv'
 WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
-      ROWTERMINATOR = '0x0a', DATAFILETYPE='char',
-      MAXERRORS=10000, TABLOCK);
+      ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=10000, TABLOCK);
 
-/* OpenSky */
 BULK INSERT dbo.os_stg_flights
 FROM 'C:\datos_dw\flightlist_20191201_20191231.csv'
 WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001',
-      ROWTERMINATOR = '0x0a', DATAFILETYPE='char',
-      MAXERRORS=0, TABLOCK);
+      ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=0, TABLOCK);
+GO
 
-/* ---------- Perfil mínimo del dataset */
-SELECT 'oa_stg_airports'  AS tabla, COUNT(*) AS filas,
+/* ---------- DEDUP POST-CARGA (B-24): una copia por llave natural ---------- */
+;WITH d AS (SELECT id, ROW_NUMBER() OVER (PARTITION BY ident ORDER BY id) rn
+            FROM dbo.oa_stg_airports)
+DELETE d WHERE rn > 1;
+
+;WITH d AS (SELECT id, ROW_NUMBER() OVER (PARTITION BY id ORDER BY (SELECT NULL)) rn
+            FROM dbo.oa_stg_regions)
+DELETE d WHERE rn > 1;
+
+;WITH d AS (SELECT id, ROW_NUMBER() OVER (PARTITION BY id ORDER BY (SELECT NULL)) rn
+            FROM dbo.oa_stg_countries)
+DELETE d WHERE rn > 1;
+
+;WITH d AS (SELECT ROW_NUMBER() OVER (PARTITION BY aircraft_uid, firstseen
+                                      ORDER BY (SELECT NULL)) rn
+            FROM dbo.os_stg_flights)
+DELETE d WHERE rn > 1;
+GO
+
+/* ---------- Perfil mínimo (esperado post-dedup) ----------
+   airports 86,116 · regions 3,987 · countries 249 · flights 2,700,968 */
+SELECT 'oa_stg_airports' AS tabla, COUNT(*) AS filas,
        SUM(CASE WHEN icao_code IS NULL OR icao_code='' THEN 1 ELSE 0 END) AS sin_icao,
        SUM(CASE WHEN iata_code IS NULL OR iata_code='' THEN 1 ELSE 0 END) AS sin_iata,
        SUM(CASE WHEN gps_code  IS NULL OR gps_code=''  THEN 1 ELSE 0 END) AS sin_gps
 FROM dbo.oa_stg_airports
-UNION ALL
-SELECT 'oa_stg_regions', COUNT(*), NULL, NULL, NULL FROM dbo.oa_stg_regions
-UNION ALL
-SELECT 'oa_stg_countries', COUNT(*), NULL, NULL, NULL FROM dbo.oa_stg_countries
-UNION ALL
-SELECT 'os_stg_flights', COUNT(*),
+UNION ALL SELECT 'oa_stg_regions',  COUNT(*), NULL, NULL, NULL FROM dbo.oa_stg_regions
+UNION ALL SELECT 'oa_stg_countries',COUNT(*), NULL, NULL, NULL FROM dbo.oa_stg_countries
+UNION ALL SELECT 'os_stg_flights',  COUNT(*),
        SUM(CASE WHEN aircraft_uid IS NULL OR aircraft_uid='' THEN 1 ELSE 0 END),
        SUM(CASE WHEN origin IS NULL OR origin='' THEN 1 ELSE 0 END),
        SUM(CASE WHEN typecode IS NULL OR typecode='' THEN 1 ELSE 0 END)
 FROM dbo.os_stg_flights;
 GO
 
-/* ---------- Parámetros de simulación  ---------- */
+/* ---------- Parámetros de simulación (gobernanza de medidas estimadas) ---------- */
 IF OBJECT_ID('dbo.ParametrosSimulacion') IS NULL
 CREATE TABLE dbo.ParametrosSimulacion (
-    Parametro VARCHAR(50) PRIMARY KEY,
-    Valor DECIMAL(12,4) NOT NULL,
+    Parametro   VARCHAR(50) PRIMARY KEY,
+    Valor       DECIMAL(12,4) NOT NULL,
     Descripcion VARCHAR(200)
 );
 MERGE dbo.ParametrosSimulacion AS t
@@ -163,49 +159,19 @@ WHEN MATCHED THEN UPDATE SET Valor = s.Valor, Descripcion = s.Descripcion
 WHEN NOT MATCHED THEN INSERT VALUES (s.Parametro, s.Valor, s.Descripcion);
 GO
 
---para documentar
-SELECT COUNT(*) AS vuelos_cargados FROM dbo.os_stg_flights;
+/* ---------- Índices para el ETL ---------- */
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name='ix_oa_stg_icao')
+    CREATE INDEX ix_oa_stg_icao ON dbo.oa_stg_airports(icao_code);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name='ix_os_stg_origen')
+    CREATE INDEX ix_os_stg_origen ON dbo.os_stg_flights(origin);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name='ix_os_stg_dest')
+    CREATE INDEX ix_os_stg_dest ON dbo.os_stg_flights(destination);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name='ix_oa_stg_regions_code')
+    CREATE INDEX ix_oa_stg_regions_code ON dbo.oa_stg_regions(code);
+GO
 
-SELECT typecode, LEN(typecode) AS largo, COUNT(*) AS n
-FROM dbo.os_stg_flights
-WHERE LEN(typecode) > 4
-GROUP BY typecode
-ORDER BY n DESC;
-
---creacion de indices para agilizar el etl luego
-CREATE INDEX ix_oa_stg_icao ON dbo.oa_stg_airports(icao_code);
-CREATE INDEX ix_os_stg_origen ON dbo.os_stg_flights(origin);
-CREATE INDEX ix_os_stg_dest ON dbo.os_stg_flights(destination);
-CREATE INDEX ix_oa_stg_regions_code ON dbo.oa_stg_regions(code);
-
---covertura a nivel de aeropuertos
-WITH extremos AS (
-    SELECT origin AS icao FROM dbo.os_stg_flights WHERE origin IS NOT NULL AND origin <> ''
-    UNION
-    SELECT destination FROM dbo.os_stg_flights WHERE destination IS NOT NULL AND destination <> ''
-)
-SELECT
-    COUNT(*)                                                        AS aeropuertos_opensky,
-    SUM(CASE WHEN ofa.airport_id IS NOT NULL THEN 1 ELSE 0 END)     AS existen_en_OpenFlights,
-    SUM(CASE WHEN oa.icao_code  IS NOT NULL THEN 1 ELSE 0 END)      AS existen_en_OurAirports,
-    SUM(CASE WHEN ofa.airport_id IS NOT NULL
-           OR oa.icao_code  IS NOT NULL THEN 1 ELSE 0 END)          AS en_alguna_fuente
-FROM extremos e
-OUTER APPLY (SELECT TOP 1 airport_id FROM OpenFlights.dbo.airports a WHERE a.icao = e.icao) ofa
-OUTER APPLY (SELECT TOP 1 icao_code FROM dbo.oa_stg_airports a WHERE a.icao_code = e.icao) oa;
-
---covertura a nivel de vuelo *(ira en la diapo)
-SELECT
-    COUNT(*) AS vuelos_con_origen,
-    SUM(CASE WHEN ofa.airport_id IS NULL THEN 1 ELSE 0 END) AS caerian_a_menos1_sin_OurAirports,
-    SUM(CASE WHEN oa.icao_code  IS NULL THEN 1 ELSE 0 END) AS caerian_a_menos1_sin_OpenFlights
-FROM dbo.os_stg_flights s
-OUTER APPLY (SELECT TOP 1 airport_id FROM OpenFlights.dbo.airports a WHERE a.icao = s.origin) ofa
-OUTER APPLY (SELECT TOP 1 icao_code FROM dbo.oa_stg_airports a WHERE a.icao_code = s.origin) oa
-WHERE s.origin IS NOT NULL AND s.origin <> '';
-
-
-----
+/* ---------- Cobertura entre fuentes (justifica las 3 fuentes; va en diapo) ---------- */
+/* a nivel de aeropuertos (versión coalesce, B-14) */
 WITH extremos AS (
     SELECT origin AS icao FROM dbo.os_stg_flights WHERE origin IS NOT NULL AND origin <> ''
     UNION
@@ -213,9 +179,20 @@ WITH extremos AS (
 )
 SELECT COUNT(*) AS aeropuertos_opensky,
        SUM(CASE WHEN ofa.airport_id IS NOT NULL THEN 1 ELSE 0 END) AS en_OpenFlights,
-       SUM(CASE WHEN oa.id IS NOT NULL THEN 1 ELSE 0 END) AS en_OurAirports_coalesce,
+       SUM(CASE WHEN oa.id IS NOT NULL THEN 1 ELSE 0 END)          AS en_OurAirports_coalesce,
        SUM(CASE WHEN ofa.airport_id IS NOT NULL OR oa.id IS NOT NULL THEN 1 ELSE 0 END) AS en_alguna
 FROM extremos e
 OUTER APPLY (SELECT TOP 1 airport_id FROM OpenFlights.dbo.airports a WHERE a.icao = e.icao) ofa
 OUTER APPLY (SELECT TOP 1 id FROM dbo.oa_stg_airports a
              WHERE a.icao_code = e.icao OR a.gps_code = e.icao) oa;
+
+/* a nivel de vuelo (la cifra de la diapo) */
+SELECT COUNT(*) AS vuelos_con_origen,
+       SUM(CASE WHEN ofa.airport_id IS NULL THEN 1 ELSE 0 END) AS caerian_a_menos1_sin_OurAirports,
+       SUM(CASE WHEN oa.id IS NULL THEN 1 ELSE 0 END)          AS caerian_a_menos1_sin_coalesce
+FROM dbo.os_stg_flights s
+OUTER APPLY (SELECT TOP 1 airport_id FROM OpenFlights.dbo.airports a WHERE a.icao = s.origin) ofa
+OUTER APPLY (SELECT TOP 1 id FROM dbo.oa_stg_airports a
+             WHERE a.icao_code = s.origin OR a.gps_code = s.origin) oa
+WHERE s.origin IS NOT NULL AND s.origin <> '';
+GO
