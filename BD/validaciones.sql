@@ -54,3 +54,5 @@ SELECT COUNT(*) AS origen_menos1 FROM dbo.FactVuelos WHERE AeropuertoOrigenKey =
 /* --- E. Log de carga (evidencia de corrida) --- */
 SELECT * FROM dbo.LogCarga ORDER BY LogId DESC;
 GO
+
+SELECT COUNT(*) FROM dbo.os_stg_flights;
