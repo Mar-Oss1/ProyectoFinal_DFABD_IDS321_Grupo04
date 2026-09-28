@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Package"
   DTS:PackageType="5"
-  DTS:VersionBuild="43"
-  DTS:VersionGUID="{38FBF4B2-B142-4A72-B205-3CCFBAC36A50}">
+  DTS:VersionBuild="61"
+  DTS:VersionGUID="{7B84DB3B-3310-4290-A872-163EBFEA8A33}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -732,283 +732,6 @@ WHERE x.rn = 1</property>
           version="1">
           <components>
             <component
-              refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET"
-              componentClassID="Microsoft.ManagedComponentHost"
-              contactInfo="Carga datos en una base de datos compatible con ADO.NET que use una vista o tabla de base de datos. Se cargan datos en una tabla nueva o existente. Por ejemplo, se usa un proveedor ADO.NET para ODBC para cargar datos en un destino ODBC.;Microsoft Corporation; Microsoft SQL Server; © Microsoft Corporation; Todos los derechos reservados; http://www.microsoft.com/sql/support;2"
-              description="Carga datos en una base de datos compatible con ADO.NET que use una vista o tabla de base de datos. Se cargan datos en una tabla nueva o existente. Por ejemplo, se usa un proveedor ADO.NET para ODBC para cargar datos en un destino ODBC."
-              name="Destino de ADO NET"
-              usesDispositions="true"
-              version="2">
-              <properties>
-                <property
-                  dataType="System.String"
-                  description="Nombre de la tabla de la base de datos de destino."
-                  expressionType="Notify"
-                  name="TableOrViewName"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">"dbo"."DimAeropuerto"</property>
-                <property
-                  dataType="System.Int32"
-                  description="Especifique el número de filas por lote. El valor predeterminado es 0, que utiliza el mismo tamaño que el búfer interno de SSIS. "
-                  expressionType="Notify"
-                  name="BatchSize">0</property>
-                <property
-                  dataType="System.Int32"
-                  description="Número de segundos antes de que se agote el tiempo de espera de un comando. Un valor de 0 indica un tiempo de espera infinito. "
-                  expressionType="Notify"
-                  name="CommandTimeout">30</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Especifica si se debe usar la interfaz SqlBulkCopy para mejorar el rendimiento de las operaciones de inserción masiva. No todos los proveedores admiten esta interfaz."
-                  expressionType="Notify"
-                  name="UseBulkInsertWhenPossible">true</property>
-                <property
-                  dataType="System.String"
-                  name="UserComponentTypeName">Microsoft.ADONETDestination</property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Connections[IDbConnection]"
-                  connectionManagerID="Package.ConnectionManagers[DESKTOP-MAR.OpenFlightsDW1]"
-                  connectionManagerRefId="Package.ConnectionManagers[DESKTOP-MAR.OpenFlightsDW1]"
-                  description="Administrador de conexiones administrado"
-                  name="IDbConnection" />
-              </connections>
-              <inputs>
-                <input
-                  refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET]"
-                  errorRowDisposition="FailComponent"
-                  hasSideEffects="true"
-                  name="Entrada de destino de ADO NET">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[ICAO]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="4"
-                      cachedName="ICAO"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[ICAO]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[ICAO]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[IATA]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="5"
-                      cachedName="IATA"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[IATA]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[IATA]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[ident]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="ident"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[BK_Ident]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[ident]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[name]"
-                      cachedDataType="wstr"
-                      cachedLength="200"
-                      cachedName="name"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Nombre]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[name]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[municipality]"
-                      cachedDataType="wstr"
-                      cachedLength="100"
-                      cachedName="municipality"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Ciudad]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[municipality]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[iso_country]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="2"
-                      cachedName="iso_country"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[CodigoPais]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[iso_country]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[iso_region]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="16"
-                      cachedName="iso_region"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[RegionCodigo]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[iso_region]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[region_nombre]"
-                      cachedDataType="wstr"
-                      cachedLength="200"
-                      cachedName="region_nombre"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[RegionNombre]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[region_nombre]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[continent]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="2"
-                      cachedName="continent"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Continente]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[continent]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[latitude_deg]"
-                      cachedDataType="numeric"
-                      cachedName="latitude_deg"
-                      cachedPrecision="18"
-                      cachedScale="10"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Latitud]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[latitude_deg]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[longitude_deg]"
-                      cachedDataType="numeric"
-                      cachedName="longitude_deg"
-                      cachedPrecision="18"
-                      cachedScale="10"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Longitud]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[longitude_deg]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[elevation_ft]"
-                      cachedDataType="i4"
-                      cachedName="elevation_ft"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[ElevationFt]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[elevation_ft]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[type]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="30"
-                      cachedName="type"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[TipoAeropuerto]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[type]" />
-                    <inputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].Columns[scheduled_service]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="3"
-                      cachedName="scheduled_service"
-                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[ServicioProgramado]"
-                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[scheduled_service]" />
-                  </inputColumns>
-                  <externalMetadataColumns
-                    isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[AeropuertoKey]"
-                      dataType="i4"
-                      name="AeropuertoKey" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[BK_Ident]"
-                      dataType="wstr"
-                      length="20"
-                      name="BK_Ident" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[ICAO]"
-                      dataType="wstr"
-                      length="4"
-                      name="ICAO" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[IATA]"
-                      dataType="wstr"
-                      length="5"
-                      name="IATA" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Nombre]"
-                      dataType="wstr"
-                      length="200"
-                      name="Nombre" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Ciudad]"
-                      dataType="wstr"
-                      length="100"
-                      name="Ciudad" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[CodigoPais]"
-                      dataType="wstr"
-                      length="2"
-                      name="CodigoPais" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[PaisNombre]"
-                      dataType="wstr"
-                      length="200"
-                      name="PaisNombre" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[RegionCodigo]"
-                      dataType="wstr"
-                      length="16"
-                      name="RegionCodigo" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[RegionNombre]"
-                      dataType="wstr"
-                      length="200"
-                      name="RegionNombre" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Continente]"
-                      dataType="wstr"
-                      length="2"
-                      name="Continente" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Latitud]"
-                      dataType="numeric"
-                      name="Latitud"
-                      precision="11"
-                      scale="7" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[Longitud]"
-                      dataType="numeric"
-                      name="Longitud"
-                      precision="11"
-                      scale="7" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[ElevationFt]"
-                      dataType="i4"
-                      name="ElevationFt" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[TipoAeropuerto]"
-                      dataType="wstr"
-                      length="50"
-                      name="TipoAeropuerto" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[ServicioProgramado]"
-                      dataType="wstr"
-                      length="30"
-                      name="ServicioProgramado" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[ZonaHoraria]"
-                      dataType="wstr"
-                      length="50"
-                      name="ZonaHoraria" />
-                    <externalMetadataColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET].ExternalColumns[OrigenFuente]"
-                      dataType="wstr"
-                      length="12"
-                      name="OrigenFuente" />
-                  </externalMetadataColumns>
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Outputs[Salida de error de destino de ADO NET]"
-                  exclusionGroup="1"
-                  isErrorOut="true"
-                  name="Salida de error de destino de ADO NET"
-                  synchronousInputId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Outputs[Salida de error de destino de ADO NET].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Outputs[Salida de error de destino de ADO NET].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Outputs[Salida de error de destino de ADO NET].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Outputs[Salida de error de destino de ADO NET].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
               refId="Package\DF_DimAeropuerto_OA\LK_DimAeropuerto"
               componentClassID="Microsoft.Lookup"
               contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
@@ -1144,6 +867,316 @@ where [refTable].[BK_Ident] = ?</property>
                       refId="Package\DF_DimAeropuerto_OA\LK_DimAeropuerto.Outputs[Lookup Error Output].Columns[ErrorColumn]"
                       dataType="i4"
                       lineageId="Package\DF_DimAeropuerto_OA\LK_DimAeropuerto.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF_DimAeropuerto_OA\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[DimAeropuerto]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[DESKTOP-MAR.OpenFlightsDW]"
+                  connectionManagerRefId="Package.ConnectionManagers[DESKTOP-MAR.OpenFlightsDW]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ICAO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="ICAO"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ICAO]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[ICAO]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[IATA]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="IATA"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IATA]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[IATA]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ident]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="ident"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BK_Ident]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[ident]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[name]"
+                      cachedDataType="wstr"
+                      cachedLength="200"
+                      cachedName="name"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Nombre]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[name]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[municipality]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="municipality"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Ciudad]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[municipality]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[iso_country]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="2"
+                      cachedName="iso_country"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CodigoPais]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[iso_country]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[iso_region]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="iso_region"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RegionCodigo]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[iso_region]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[region_nombre]"
+                      cachedDataType="wstr"
+                      cachedLength="200"
+                      cachedName="region_nombre"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RegionNombre]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[region_nombre]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[continent]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="2"
+                      cachedName="continent"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Continente]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[continent]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[latitude_deg]"
+                      cachedDataType="numeric"
+                      cachedName="latitude_deg"
+                      cachedPrecision="18"
+                      cachedScale="10"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Latitud]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[latitude_deg]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[longitude_deg]"
+                      cachedDataType="numeric"
+                      cachedName="longitude_deg"
+                      cachedPrecision="18"
+                      cachedScale="10"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Longitud]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[longitude_deg]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[elevation_ft]"
+                      cachedDataType="i4"
+                      cachedName="elevation_ft"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ElevationFt]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[elevation_ft]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[type]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="30"
+                      cachedName="type"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TipoAeropuerto]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[type]" />
+                    <inputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[scheduled_service]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="scheduled_service"
+                      externalMetadataColumnId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ServicioProgramado]"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Source.Outputs[OLE DB Source Output].Columns[scheduled_service]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AeropuertoKey]"
+                      dataType="i4"
+                      name="AeropuertoKey" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BK_Ident]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="BK_Ident" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ICAO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="4"
+                      name="ICAO" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IATA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="IATA" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Nombre]"
+                      dataType="wstr"
+                      length="200"
+                      name="Nombre" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Ciudad]"
+                      dataType="wstr"
+                      length="100"
+                      name="Ciudad" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CodigoPais]"
+                      codePage="1252"
+                      dataType="str"
+                      length="2"
+                      name="CodigoPais" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PaisNombre]"
+                      dataType="wstr"
+                      length="200"
+                      name="PaisNombre" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RegionCodigo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="RegionCodigo" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RegionNombre]"
+                      dataType="wstr"
+                      length="200"
+                      name="RegionNombre" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Continente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="2"
+                      name="Continente" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Latitud]"
+                      dataType="numeric"
+                      name="Latitud"
+                      precision="11"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Longitud]"
+                      dataType="numeric"
+                      name="Longitud"
+                      precision="11"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ElevationFt]"
+                      dataType="i4"
+                      name="ElevationFt" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TipoAeropuerto]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="TipoAeropuerto" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ServicioProgramado]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="ServicioProgramado" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ZonaHoraria]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ZonaHoraria" />
+                    <externalMetadataColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OrigenFuente]"
+                      codePage="1252"
+                      dataType="str"
+                      length="12"
+                      name="OrigenFuente" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -1580,7 +1613,7 @@ WHERE x.rn = 1</property>
           <paths>
             <path
               refId="Package\DF_DimAeropuerto_OA.Paths[Lookup No Match Output]"
-              endId="Package\DF_DimAeropuerto_OA\Destino de ADO NET.Inputs[Entrada de destino de ADO NET]"
+              endId="Package\DF_DimAeropuerto_OA\OLE DB Destination.Inputs[OLE DB Destination Input]"
               name="Lookup No Match Output"
               startId="Package\DF_DimAeropuerto_OA\LK_DimAeropuerto.Outputs[Lookup No Match Output]" />
             <path
@@ -3497,84 +3530,7 @@ GROUP BY codigo</property>
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT FechaKey, HoraSalida, AerolineaKey, AvionKey,
-       AeropuertoOrigenKey, AeropuertoDestinoKey,
-       Callsign, AircraftUID, PrimeraVista, UltimaVista,
-       DuracionMinutos, DistanciaKm, EsInternacional, EsRutaOfertada,
-       AsientosDisponibles, PasajerosEstimados, FactorOcupacionEstimado,
-       IngresoEstimadoUSD, RetrasoEstimadoMin, EsVueloValido
-FROM (
-    SELECT w.*,
-           CONVERT(INT, Asientos)                      AS AsientosDisponibles,
-           CONVERT(INT, ROUND(Asientos * FactorOc, 0)) AS PasajerosEstimados,
-           CONVERT(DECIMAL(5,4), FactorOc)             AS FactorOcupacionEstimado,
-           CASE WHEN DistanciaKm IS NULL THEN NULL
-                ELSE ROUND(CONVERT(INT, ROUND(Asientos * FactorOc, 0)) * Tarifa * DistanciaKm, 2)
-           END                                         AS IngresoEstimadoUSD,
-           Retraso                                     AS RetrasoEstimadoMin,
-           CASE WHEN origin IS NULL OR origin = '' OR destination IS NULL OR destination = ''
-                THEN 0 ELSE 1 END                      AS EsVueloValido
-    FROM (
-        SELECT v.Callsign, v.AircraftUID, v.typecode, v.PrimeraVista, v.UltimaVista,
-               v.origin, v.destination, v.Asientos, v.Tarifa, v.FactorOc, v.Retraso,
-               CONVERT(INT, FORMAT(v.FechaVuelo,'yyyyMMdd'))   AS FechaKey,
-               DATEPART(HOUR, v.PrimeraVista)                  AS HoraSalida,
-               DATEDIFF(MINUTE, v.PrimeraVista, v.UltimaVista) AS DuracionMinutos,
-               ISNULL(al.AerolineaKey,-1)   AS AerolineaKey,
-               ISNULL(av.AvionKey,-1)       AS AvionKey,
-               ISNULL(do_.AeropuertoKey,-1) AS AeropuertoOrigenKey,
-               ISNULL(dd.AeropuertoKey,-1)  AS AeropuertoDestinoKey,
-               CASE WHEN do_.Latitud IS NULL OR dd.Latitud IS NULL THEN NULL ELSE
-                    geography::Point(do_.Latitud, do_.Longitud, 4326)
-                      .STDistance(geography::Point(dd.Latitud, dd.Longitud, 4326)) / 1000.0
-               END AS DistanciaKm,
-               CASE WHEN do_.CodigoPais IS NULL OR dd.CodigoPais IS NULL THEN NULL
-                    WHEN do_.CodigoPais &lt;&gt; dd.CodigoPais THEN 1 ELSE 0 END AS EsInternacional,
-               CASE WHEN x.origen IS NOT NULL THEN 1 ELSE 0 END AS EsRutaOfertada
-        FROM (
-            SELECT s.callsign AS Callsign, s.aircraft_uid AS AircraftUID, s.typecode,
-                   s.origin, s.destination,
-                   TRY_CONVERT(DATETIME2(0), LEFT(s.firstseen,19)) AS PrimeraVista,
-                   TRY_CONVERT(DATETIME2(0), LEFT(s.lastseen,19))  AS UltimaVista,
-                   TRY_CONVERT(DATE, LEFT(s.day,10))               AS FechaVuelo,
-                   p.Asientos, p.Tarifa,
-                   CASE WHEN CONVERT(DECIMAL(5,4),
-                         p.FBase + CASE WHEN MONTH(TRY_CONVERT(DATE,LEFT(s.day,10))) IN (1,7,12)
-                                        THEN p.FAlta ELSE 0 END
-                         + (ABS(CHECKSUM(s.aircraft_uid, s.firstseen)) % 100) / 1000.0
-                         - p.Jitter / 2) BETWEEN 0.55 AND 0.98
-                        THEN CONVERT(DECIMAL(5,4),
-                         p.FBase + CASE WHEN MONTH(TRY_CONVERT(DATE,LEFT(s.day,10))) IN (1,7,12)
-                                        THEN p.FAlta ELSE 0 END
-                         + (ABS(CHECKSUM(s.aircraft_uid, s.firstseen)) % 100) / 1000.0
-                         - p.Jitter / 2)
-                        ELSE 0.80 END AS FactorOc,
-                   ABS(CHECKSUM(s.callsign, s.aircraft_uid)) % p.RetMax
-                     + CASE WHEN DATEPART(HOUR, TRY_CONVERT(DATETIME2(0), LEFT(s.firstseen,19)))
-                                 IN (7,8,9,17,18,19) THEN p.RetPeak ELSE 0 END AS Retraso
-            FROM dbo.os_stg_flights s
-            CROSS JOIN (SELECT
-                  MAX(CASE WHEN Parametro='AsientosPromedio'     THEN Valor END) AS Asientos,
-                  MAX(CASE WHEN Parametro='FactorOcupacionBase'  THEN Valor END) AS FBase,
-                  MAX(CASE WHEN Parametro='FactorEstacionalAlta' THEN Valor END) AS FAlta,
-                  MAX(CASE WHEN Parametro='JitterRango'          THEN Valor END) AS Jitter,
-                  MAX(CASE WHEN Parametro='TarifaUSDPorKm'       THEN Valor END) AS Tarifa,
-                  MAX(CASE WHEN Parametro='RetrasoBaseMax'       THEN Valor END) AS RetMax,
-                  MAX(CASE WHEN Parametro='RetrasoExtraPeak'     THEN Valor END) AS RetPeak
-                FROM dbo.ParametrosSimulacion) p
-            WHERE TRY_CONVERT(DATETIME2(0), LEFT(s.firstseen,19)) IS NOT NULL
-              AND TRY_CONVERT(DATETIME2(0), LEFT(s.lastseen,19))  IS NOT NULL
-              AND TRY_CONVERT(DATE, LEFT(s.day,10))               IS NOT NULL
-              AND TRY_CONVERT(DATETIME2(0), LEFT(s.lastseen,19))
-                &gt; TRY_CONVERT(DATETIME2(0), LEFT(s.firstseen,19))
-        ) v
-        LEFT JOIN dbo.DimAeropuerto do_ ON do_.ICAO = v.origin
-        LEFT JOIN dbo.DimAeropuerto dd  ON dd.ICAO  = v.destination
-        LEFT JOIN dbo.DimAerolinea al   ON al.ICAO  = LEFT(LTRIM(RTRIM(v.Callsign)),3)
-        LEFT JOIN dbo.DimAvion     av   ON av.BK_CodigoTipo = v.typecode
-        LEFT JOIN dbo.xw_rutas_icao x   ON x.origen = v.origin AND x.destino = v.destination
-    ) w
-) z</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT * FROM dbo.vw_FactVuelosSource</property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -4030,15 +3986,15 @@ FROM (
           </components>
           <paths>
             <path
-              refId="Package\DF_FactVuelos.Paths[Excluidos]"
-              endId="Package\DF_FactVuelos\OLE DB Destination.Inputs[OLE DB Destination Input]"
-              name="Excluidos"
-              startId="Package\DF_FactVuelos\CS_Validacion.Outputs[Excluidos]" />
-            <path
               refId="Package\DF_FactVuelos.Paths[OLE DB Source Output]"
               endId="Package\DF_FactVuelos\CS_Validacion.Inputs[Conditional Split Input]"
               name="OLE DB Source Output"
               startId="Package\DF_FactVuelos\OLE DB Source.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\DF_FactVuelos.Paths[validos]"
+              endId="Package\DF_FactVuelos\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="validos"
+              startId="Package\DF_FactVuelos\CS_Validacion.Outputs[validos]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -4207,6 +4163,10 @@ FROM (
           Id="Package\DF_DimAvion"
           TopLeft="357.5,108.5" />
         <NodeLayout
+          Size="148,42"
+          Id="Package\DF_FactVuelos"
+          TopLeft="271,204" />
+        <NodeLayout
           Size="192,42"
           Id="Package\Limpiar las Dimensiones"
           TopLeft="117,106" />
@@ -4214,6 +4174,10 @@ FROM (
           Size="217,42"
           Id="Package\SQL_Enriquecer_Aeropuertos"
           TopLeft="742,203" />
+        <NodeLayout
+          Size="124,42"
+          Id="Package\SQL_LOG"
+          TopLeft="93,208" />
         <NodeLayout
           Size="205,42"
           Id="Package\SQL_Reconstruir_xw_rutas"
@@ -4350,36 +4314,6 @@ FROM (
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="148,42"
-          Id="Package\DF_FactVuelos"
-          TopLeft="271,204" />
-        <NodeLayout
-          Size="124,42"
-          Id="Package\SQL_LOG"
-          TopLeft="93,208" />
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Restricción 8]"
-          TopLeft="271,227">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-54,0"
-              Start="0,0"
-              End="-46.5,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="-46.5,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Restricción 6]"
           TopLeft="449,226">
@@ -4394,6 +4328,28 @@ FROM (
                   Capacity="5">
                   <mssgle:LineSegment
                     End="-22.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restricción 8]"
+          TopLeft="271,227">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-54,0"
+              Start="0,0"
+              End="-46.5,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-46.5,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -4453,9 +4409,7 @@ FROM (
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -4553,80 +4507,54 @@ FROM (
         <NodeLayout
           Size="167,42"
           Id="Package\DF_DimAeropuerto_OA\LK_DimAeropuerto"
-          TopLeft="321,184" />
-        <NodeLayout
-          Size="176,42"
-          Id="Package\DF_DimAeropuerto_OA\Destino de ADO NET"
-          TopLeft="259,311" />
-        <EdgeLayout
-          Id="Package\DF_DimAeropuerto_OA.Paths[Lookup No Match Output]"
-          TopLeft="404.5,226">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-57.5,85"
-              Start="0,0"
-              End="-57.5,77.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,38.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,38.5"
-                    Point2="0,42.5"
-                    Point3="-4,42.5" />
-                  <mssgle:LineSegment
-                    End="-53.5,42.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-53.5,42.5"
-                    Point2="-57.5,42.5"
-                    Point3="-57.5,46.5" />
-                  <mssgle:LineSegment
-                    End="-57.5,77.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-84.55638671875,47.5,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="206,190" />
         <EdgeLayout
           Id="Package\DF_DimAeropuerto_OA.Paths[OLE DB Source Output]"
-          TopLeft="292,123">
+          TopLeft="290.75,123">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="112.5,61"
+              EndConnector="0,67"
               Start="0,0"
-              End="112.5,53.5">
+              End="0,59.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,26.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,26.5"
-                    Point2="0,30.5"
-                    Point3="4,30.5" />
+                    End="0,59.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="171,42"
+          Id="Package\DF_DimAeropuerto_OA\OLE DB Destination"
+          TopLeft="204,318" />
+        <EdgeLayout
+          Id="Package\DF_DimAeropuerto_OA.Paths[Lookup No Match Output]"
+          TopLeft="289.5,232">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,86"
+              Start="0,0"
+              End="0,78.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="108.5,30.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="108.5,30.5"
-                    Point2="112.5,30.5"
-                    Point3="112.5,34.5" />
-                  <mssgle:LineSegment
-                    End="112.5,53.5" />
+                    End="0,78.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
+              BoundingBox="-55.80638671875,33.4453125,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -4647,7 +4575,7 @@ FROM (
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -4657,16 +4585,8 @@ FROM (
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF_DimAeropuerto_OA\Destino de ADO NET">
-    <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
       </Property>
@@ -4942,7 +4862,7 @@ FROM (
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -4952,7 +4872,7 @@ FROM (
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -4989,50 +4909,24 @@ FROM (
     design-time-name="Package\DF_FactVuelos">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="150,42"
-          Id="Package\DF_FactVuelos\OLE DB Source"
-          TopLeft="213,102" />
-        <NodeLayout
-          Size="171,42"
-          Id="Package\DF_FactVuelos\OLE DB Destination"
-          TopLeft="207,313" />
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="145,42"
           Id="Package\DF_FactVuelos\CS_Validacion"
           TopLeft="211,204" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\DF_FactVuelos\OLE DB Source"
+          TopLeft="263,95" />
         <EdgeLayout
           Id="Package\DF_FactVuelos.Paths[OLE DB Source Output]"
-          TopLeft="285.75,144">
+          TopLeft="338,137">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,60"
+              EndConnector="-54.5,67"
               Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF_FactVuelos.Paths[Excluidos]"
-          TopLeft="283.5,246">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="9,67"
-              Start="0,0"
-              End="9,59.5">
+              End="-54.5,59.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
@@ -5041,15 +4935,15 @@ FROM (
                   <mssgle:CubicBezierSegment
                     Point1="0,29.5"
                     Point2="0,33.5"
-                    Point3="4,33.5" />
+                    Point3="-4,33.5" />
                   <mssgle:LineSegment
-                    End="5,33.5" />
+                    End="-50.5,33.5" />
                   <mssgle:CubicBezierSegment
-                    Point1="5,33.5"
-                    Point2="9,33.5"
-                    Point3="9,37.5" />
+                    Point1="-50.5,33.5"
+                    Point2="-54.5,33.5"
+                    Point3="-54.5,37.5" />
                   <mssgle:LineSegment
-                    End="9,59.5" />
+                    End="-54.5,59.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -5058,9 +4952,62 @@ FROM (
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="171,42"
+          Id="Package\DF_FactVuelos\OLE DB Destination"
+          TopLeft="278,317" />
+        <EdgeLayout
+          Id="Package\DF_FactVuelos.Paths[validos]"
+          TopLeft="283.5,246">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="80,71"
+              Start="0,0"
+              End="80,63.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,31.5"
+                    Point2="0,35.5"
+                    Point3="4,35.5" />
+                  <mssgle:LineSegment
+                    End="76,35.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="76,35.5"
+                    Point2="80,35.5"
+                    Point3="80,39.5" />
+                  <mssgle:LineSegment
+                    End="80,63.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="23.99341796875,40.5,32.0131640625,9.7490234375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF_DimAeropuerto_OA\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF_FactVuelos\OLE DB Source">
     <Properties>
