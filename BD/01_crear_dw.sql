@@ -179,3 +179,88 @@ SELECT (SELECT COUNT(*) FROM dbo.DimFecha)      AS dim_fecha,
        (SELECT COUNT(*) FROM dbo.xw_rutas_icao) AS xw_rutas,
        (SELECT COUNT(*) FROM dbo.LogCarga)      AS logs;
 GO
+
+--creacion de vista
+IF OBJECT_ID('dbo.vw_FactVuelosSource') IS NOT NULL
+    DROP VIEW dbo.vw_FactVuelosSource;
+GO
+CREATE VIEW dbo.vw_FactVuelosSource AS
+SELECT FechaKey, HoraSalida, AerolineaKey, AvionKey,
+       AeropuertoOrigenKey, AeropuertoDestinoKey,
+       Callsign, AircraftUID, PrimeraVista, UltimaVista,
+       DuracionMinutos, DistanciaKm, EsInternacional, EsRutaOfertada,
+       AsientosDisponibles, PasajerosEstimados, FactorOcupacionEstimado,
+       IngresoEstimadoUSD, RetrasoEstimadoMin, EsVueloValido
+FROM (
+    SELECT w.*,
+           CONVERT(INT, Asientos)                      AS AsientosDisponibles,
+           CONVERT(INT, ROUND(Asientos * FactorOc, 0)) AS PasajerosEstimados,
+           CONVERT(DECIMAL(5,4), FactorOc)             AS FactorOcupacionEstimado,
+           CASE WHEN DistanciaKm IS NULL THEN NULL
+                ELSE ROUND(CONVERT(INT, ROUND(Asientos * FactorOc, 0)) * Tarifa * DistanciaKm, 2)
+           END                                         AS IngresoEstimadoUSD,
+           Retraso                                     AS RetrasoEstimadoMin,
+           CASE WHEN origin IS NULL OR origin = '' OR destination IS NULL OR destination = ''
+                THEN 0 ELSE 1 END                      AS EsVueloValido
+    FROM (
+        SELECT v.Callsign, v.AircraftUID, v.typecode, v.PrimeraVista, v.UltimaVista,
+               v.origin, v.destination, v.Asientos, v.Tarifa, v.FactorOc, v.Retraso,
+               CONVERT(INT, FORMAT(v.FechaVuelo,'yyyyMMdd'))   AS FechaKey,
+               DATEPART(HOUR, v.PrimeraVista)                  AS HoraSalida,
+               DATEDIFF(MINUTE, v.PrimeraVista, v.UltimaVista) AS DuracionMinutos,
+               ISNULL(al.AerolineaKey,-1)   AS AerolineaKey,
+               ISNULL(av.AvionKey,-1)       AS AvionKey,
+               ISNULL(do_.AeropuertoKey,-1) AS AeropuertoOrigenKey,
+               ISNULL(dd.AeropuertoKey,-1)  AS AeropuertoDestinoKey,
+               CASE WHEN do_.Latitud IS NULL OR dd.Latitud IS NULL THEN NULL ELSE
+                    geography::Point(do_.Latitud, do_.Longitud, 4326)
+                      .STDistance(geography::Point(dd.Latitud, dd.Longitud, 4326)) / 1000.0
+               END AS DistanciaKm,
+               CASE WHEN do_.CodigoPais IS NULL OR dd.CodigoPais IS NULL THEN NULL
+                    WHEN do_.CodigoPais <> dd.CodigoPais THEN 1 ELSE 0 END AS EsInternacional,
+               CASE WHEN x.origen IS NOT NULL THEN 1 ELSE 0 END AS EsRutaOfertada
+        FROM (
+            SELECT s.callsign AS Callsign, s.aircraft_uid AS AircraftUID, s.typecode,
+                   s.origin, s.destination,
+                   TRY_CONVERT(DATETIME2(0), LEFT(s.firstseen,19)) AS PrimeraVista,
+                   TRY_CONVERT(DATETIME2(0), LEFT(s.lastseen,19))  AS UltimaVista,
+                   TRY_CONVERT(DATE, LEFT(s.day,10))               AS FechaVuelo,
+                   p.Asientos, p.Tarifa,
+                   CASE WHEN CONVERT(DECIMAL(5,4),
+                         p.FBase + CASE WHEN MONTH(TRY_CONVERT(DATE,LEFT(s.day,10))) IN (1,7,12)
+                                        THEN p.FAlta ELSE 0 END
+                         + (ABS(CHECKSUM(s.aircraft_uid, s.firstseen)) % 100) / 1000.0
+                         - p.Jitter / 2) BETWEEN 0.55 AND 0.98
+                        THEN CONVERT(DECIMAL(5,4),
+                         p.FBase + CASE WHEN MONTH(TRY_CONVERT(DATE,LEFT(s.day,10))) IN (1,7,12)
+                                        THEN p.FAlta ELSE 0 END
+                         + (ABS(CHECKSUM(s.aircraft_uid, s.firstseen)) % 100) / 1000.0
+                         - p.Jitter / 2)
+                        ELSE 0.80 END AS FactorOc,
+                   ABS(CHECKSUM(s.callsign, s.aircraft_uid)) % p.RetMax
+                     + CASE WHEN DATEPART(HOUR, TRY_CONVERT(DATETIME2(0), LEFT(s.firstseen,19)))
+                                 IN (7,8,9,17,18,19) THEN p.RetPeak ELSE 0 END AS Retraso
+            FROM dbo.os_stg_flights s
+            CROSS JOIN (SELECT
+                  MAX(CASE WHEN Parametro='AsientosPromedio'     THEN Valor END) AS Asientos,
+                  MAX(CASE WHEN Parametro='FactorOcupacionBase'  THEN Valor END) AS FBase,
+                  MAX(CASE WHEN Parametro='FactorEstacionalAlta' THEN Valor END) AS FAlta,
+                  MAX(CASE WHEN Parametro='JitterRango'          THEN Valor END) AS Jitter,
+                  MAX(CASE WHEN Parametro='TarifaUSDPorKm'       THEN Valor END) AS Tarifa,
+                  MAX(CASE WHEN Parametro='RetrasoBaseMax'       THEN Valor END) AS RetMax,
+                  MAX(CASE WHEN Parametro='RetrasoExtraPeak'     THEN Valor END) AS RetPeak
+                FROM dbo.ParametrosSimulacion) p
+            WHERE TRY_CONVERT(DATETIME2(0), LEFT(s.firstseen,19)) IS NOT NULL
+              AND TRY_CONVERT(DATETIME2(0), LEFT(s.lastseen,19))  IS NOT NULL
+              AND TRY_CONVERT(DATE, LEFT(s.day,10))               IS NOT NULL
+              AND TRY_CONVERT(DATETIME2(0), LEFT(s.lastseen,19))
+                > TRY_CONVERT(DATETIME2(0), LEFT(s.firstseen,19))
+        ) v
+        LEFT JOIN dbo.DimAeropuerto do_ ON do_.ICAO = v.origin
+        LEFT JOIN dbo.DimAeropuerto dd  ON dd.ICAO  = v.destination
+        LEFT JOIN dbo.DimAerolinea al   ON al.ICAO  = LEFT(LTRIM(RTRIM(v.Callsign)),3)
+        LEFT JOIN dbo.DimAvion     av   ON av.BK_CodigoTipo = v.typecode
+        LEFT JOIN dbo.xw_rutas_icao x   ON x.origen = v.origin AND x.destino = v.destination
+    ) w
+) z;
+GO
