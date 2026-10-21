@@ -1,5 +1,5 @@
 --Le damos permisos al servicio como owner del cubo
-    USE [OpenFlightsDW]
+USE [OpenFlightsDW]
 GO
 
 -- Reemplaza vacíos '' o '\N' de OpenFlights por 'Sin Alias' para que no choquen con NULL
