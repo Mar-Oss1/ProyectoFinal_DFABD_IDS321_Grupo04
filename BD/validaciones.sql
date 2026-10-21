@@ -1,3 +1,24 @@
+--Le damos permisos al servicio como owner del cubo
+    USE [OpenFlightsDW]
+GO
+
+-- Reemplaza vacíos '' o '\N' de OpenFlights por 'Sin Alias' para que no choquen con NULL
+UPDATE [dbo].[DimAerolinea]
+SET [Alias] = 'Sin Alias'
+WHERE [Alias] IS NULL OR LTRIM(RTRIM([Alias])) IN ('', '\N', 'N/A');
+
+UPDATE [dbo].[DimAerolinea]
+SET [Callsign] = 'Sin Callsign'
+WHERE [Callsign] IS NULL OR LTRIM(RTRIM([Callsign])) IN ('', '\N');
+
+UPDATE [dbo].[DimAerolinea]
+SET [IATA] = 'S/I'
+WHERE [IATA] IS NULL OR LTRIM(RTRIM([IATA])) IN ('', '\N');
+
+UPDATE [dbo].[DimAerolinea]
+SET [Pais] = 'Sin Pais'
+WHERE [Pais] IS NULL OR LTRIM(RTRIM([Pais])) IN ('', '\N');
+GO
 /* ============================================================
    02 · VALIDACIONES (solo lectura:D
    RUNBOOK: paso 5 de 5 (después de ejecutar el paquete SSIS)

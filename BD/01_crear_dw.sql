@@ -15,9 +15,9 @@ CREATE TABLE dbo.DimFecha (
     Anio          INT  NOT NULL,
     Trimestre     INT  NOT NULL,
     Mes           INT  NOT NULL,
-    NombreMes     VARCHAR(10),
+    NombreMes     NVARCHAR(50),
     Dia           INT  NOT NULL,
-    NombreDia     VARCHAR(10),
+    NombreDia     NVARCHAR(50),
     EsFinDeSemana BIT  NOT NULL
 );
 IF NOT EXISTS (SELECT 1 FROM dbo.DimFecha)
