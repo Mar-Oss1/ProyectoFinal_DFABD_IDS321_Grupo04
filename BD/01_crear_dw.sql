@@ -264,3 +264,17 @@ FROM (
     ) w
 ) z;
 GO
+
+/* Índices para acelerar el procesamiento del cubo OLAP */
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name='IX_FactVuelos_FechaKey')
+    CREATE NONCLUSTERED INDEX IX_FactVuelos_FechaKey ON dbo.FactVuelos(FechaKey);
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name='IX_FactVuelos_AerolineaKey')
+    CREATE NONCLUSTERED INDEX IX_FactVuelos_AerolineaKey ON dbo.FactVuelos(AerolineaKey);
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name='IX_FactVuelos_AvionKey')
+    CREATE NONCLUSTERED INDEX IX_FactVuelos_AvionKey ON dbo.FactVuelos(AvionKey);
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name='IX_FactVuelos_Origen_Destino')
+    CREATE NONCLUSTERED INDEX IX_FactVuelos_Origen_Destino ON dbo.FactVuelos(AeropuertoOrigenKey, AeropuertoDestinoKey);
+GO

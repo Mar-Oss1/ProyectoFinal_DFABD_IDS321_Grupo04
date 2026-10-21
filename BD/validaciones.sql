@@ -1,32 +1,11 @@
 --Le damos permisos al servicio como owner del cubo
 USE [OpenFlightsDW]
 GO
-
--- Reemplaza vacíos '' o '\N' de OpenFlights por 'Sin Alias' para que no choquen con NULL
-UPDATE [dbo].[DimAerolinea]
-SET [Alias] = 'Sin Alias'
-WHERE [Alias] IS NULL OR LTRIM(RTRIM([Alias])) IN ('', '\N', 'N/A');
-
-UPDATE [dbo].[DimAerolinea]
-SET [Callsign] = 'Sin Callsign'
-WHERE [Callsign] IS NULL OR LTRIM(RTRIM([Callsign])) IN ('', '\N');
-
-UPDATE [dbo].[DimAerolinea]
-SET [IATA] = 'S/I'
-WHERE [IATA] IS NULL OR LTRIM(RTRIM([IATA])) IN ('', '\N');
-
-UPDATE [dbo].[DimAerolinea]
-SET [Pais] = 'Sin Pais'
-WHERE [Pais] IS NULL OR LTRIM(RTRIM([Pais])) IN ('', '\N');
-GO
 /* ============================================================
    02 · VALIDACIONES (solo lectura:D
    RUNBOOK: paso 5 de 5 (después de ejecutar el paquete SSIS)
    Cada bloque dice su resultado ESPERADO para auditoría rápida.
    ============================================================ */
-USE OpenFlightsDW;
-GO
-
 /* --- A. Staging post-00 (esperado: 86,116 / 3,987 / 249 / 2,700,968
        y filas == unicos, prueba de que el dedup corrió) --- */
 SELECT 'airports' t, COUNT(*) filas, COUNT(DISTINCT ident) unicos FROM dbo.oa_stg_airports

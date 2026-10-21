@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Package"
   DTS:PackageType="5"
-  DTS:VersionBuild="61"
-  DTS:VersionGUID="{7B84DB3B-3310-4290-A872-163EBFEA8A33}">
+  DTS:VersionBuild="63"
+  DTS:VersionGUID="{3967FF23-D450-48EA-8099-067E78A3BEE2}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -442,7 +442,14 @@ where [refTable].[BK_AirlineID] = ?</property>
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT airline_id, name, alias, iata, icao, callsign, country, activa
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT airline_id, 
+       name, 
+       CASE WHEN LTRIM(RTRIM(alias)) IN ('', '\N', 'N/A') OR alias IS NULL THEN 'Sin Alias' ELSE alias END AS alias,
+       CASE WHEN LTRIM(RTRIM(iata)) IN ('', '\N') OR iata IS NULL THEN 'S/I' ELSE iata END AS iata, 
+       icao, 
+       CASE WHEN LTRIM(RTRIM(callsign)) IN ('', '\N') OR callsign IS NULL THEN 'Sin Callsign' ELSE callsign END AS callsign, 
+       CASE WHEN LTRIM(RTRIM(country)) IN ('', '\N') OR country IS NULL THEN 'Sin Pais' ELSE country END AS country, 
+       activa
 FROM (
     SELECT airline_id, name, alias,
            CAST(iata AS VARCHAR(5))      AS iata,
@@ -1209,14 +1216,19 @@ where [refTable].[BK_Ident] = ?</property>
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT ident, ICAO, IATA, name, municipality, iso_country, iso_region,
-       region_nombre, continent, latitude_deg, longitude_deg,
-       elevation_ft, type, scheduled_service
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT ident, ICAO, 
+       ISNULL(IATA, 'S/I') AS IATA, 
+       name, 
+       ISNULL(municipality, 'Sin Ciudad') AS municipality, 
+       iso_country, iso_region, region_nombre, continent, 
+       latitude_deg, longitude_deg, elevation_ft, type, scheduled_service
 FROM (
     SELECT CAST(a.ident AS VARCHAR(20)) AS ident,
            COALESCE(NULLIF(a.icao_code,''), NULLIF(a.gps_code,'')) AS ICAO,
            NULLIF(a.iata_code,'') AS IATA,
-           a.name, a.municipality, a.iso_country, a.iso_region,
+           a.name, 
+           NULLIF(a.municipality,'') AS municipality, 
+           a.iso_country, a.iso_region,
            r.name AS region_nombre, a.continent,
            a.latitude_deg, a.longitude_deg, a.elevation_ft, a.type, a.scheduled_service,
            ROW_NUMBER() OVER (
@@ -2203,8 +2215,14 @@ where [refTable].[ICAO] = ?</property>
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT airport_id, icao, iata, name, city, country,
-       latitude, longitude, altitude_ft, tz_olson, iso_code
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT airport_id, icao, 
+       CASE WHEN iata IN ('', '\N') OR iata IS NULL THEN 'S/I' ELSE iata END AS iata, 
+       name, 
+       CASE WHEN city IN ('', '\N') OR city IS NULL THEN 'Sin Ciudad' ELSE city END AS city, 
+       CASE WHEN country IN ('', '\N') OR country IS NULL THEN 'Sin Pais' ELSE country END AS country, 
+       latitude, longitude, altitude_ft, 
+       CASE WHEN tz_olson IN ('', '\N') OR tz_olson IS NULL THEN 'Sin Zona Horaria' ELSE tz_olson END AS tz_olson, 
+       iso_code
 FROM (
     SELECT a.airport_id,
            CAST(a.icao AS VARCHAR(4))  AS icao,
@@ -4501,13 +4519,17 @@ GROUP BY codigo</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="150,42"
-          Id="Package\DF_DimAeropuerto_OA\OLE DB Source"
-          TopLeft="217,81" />
+          Size="171,42"
+          Id="Package\DF_DimAeropuerto_OA\OLE DB Destination"
+          TopLeft="204,318" />
         <NodeLayout
           Size="167,42"
           Id="Package\DF_DimAeropuerto_OA\LK_DimAeropuerto"
           TopLeft="206,190" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\DF_DimAeropuerto_OA\OLE DB Source"
+          TopLeft="217,81" />
         <EdgeLayout
           Id="Package\DF_DimAeropuerto_OA.Paths[OLE DB Source Output]"
           TopLeft="290.75,123">
@@ -4530,10 +4552,6 @@ GROUP BY codigo</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="171,42"
-          Id="Package\DF_DimAeropuerto_OA\OLE DB Destination"
-          TopLeft="204,318" />
         <EdgeLayout
           Id="Package\DF_DimAeropuerto_OA.Paths[Lookup No Match Output]"
           TopLeft="289.5,232">
@@ -4562,10 +4580,15 @@ GROUP BY codigo</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF_DimAeropuerto_OA\OLE DB Source">
+    design-time-name="Package\DF_DimAeropuerto_OA\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -4575,7 +4598,7 @@ GROUP BY codigo</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -4585,8 +4608,16 @@ GROUP BY codigo</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:int">0</Value>
+          type="q4:string">0</Value>
       </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF_DimAeropuerto_OA\OLE DB Source">
+    <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
       </Property>
@@ -4862,7 +4893,7 @@ GROUP BY codigo</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -4872,7 +4903,7 @@ GROUP BY codigo</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:int">0</Value>
+          type="q4:string">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -4995,19 +5026,6 @@ GROUP BY codigo</property>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF_DimAeropuerto_OA\OLE DB Destination">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF_FactVuelos\OLE DB Source">
     <Properties>

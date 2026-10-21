@@ -81,25 +81,48 @@ GO
    REGLA B-24: el BULK AGREGA filas. Re-ejecutar este archivo completo es
    seguro (DROP al inicio + dedup post-carga); re-ejecutar SOLO este bloque
    exige reset previo de las tablas. */
-BULK INSERT dbo.oa_stg_airports
-FROM 'C:\datos_dw\airports.csv'
-WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
-      ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=10000, TABLOCK);
+BEGIN TRY
+    -- 1. Carga de Aeropuertos y limpieza
+    BULK INSERT dbo.oa_stg_airports
+    FROM 'C:\datos_dw\airports.csv'
+    WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
+          ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=10000, TABLOCK);
 
-BULK INSERT dbo.oa_stg_regions
-FROM 'C:\datos_dw\regions.csv'
-WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
-      ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=10000, TABLOCK);
+    UPDATE dbo.oa_stg_airports SET icao_code = NULL WHERE icao_code = '';
+    UPDATE dbo.oa_stg_airports SET iata_code = NULL WHERE iata_code = '';
+    UPDATE dbo.oa_stg_airports SET gps_code = NULL WHERE gps_code = '';
 
-BULK INSERT dbo.oa_stg_countries
-FROM 'C:\datos_dw\countries.csv'
-WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
-      ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=10000, TABLOCK);
+    -- 2. Carga de Regiones
+    BULK INSERT dbo.oa_stg_regions
+    FROM 'C:\datos_dw\regions.csv'
+    WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
+          ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=10000, TABLOCK);
 
-BULK INSERT dbo.os_stg_flights
-FROM 'C:\datos_dw\flightlist_20191201_20191231.csv'
-WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001',
-      ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=0, TABLOCK);
+    -- 3. Carga de Países
+    BULK INSERT dbo.oa_stg_countries
+    FROM 'C:\datos_dw\countries.csv'
+    WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001', FIELDQUOTE='"',
+          ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=10000, TABLOCK);
+
+    -- 4. Carga de Vuelos y limpieza
+    BULK INSERT dbo.os_stg_flights
+    FROM 'C:\datos_dw\flightlist_20191201_20191231.csv'
+    WITH (FORMAT='CSV', FIRSTROW=2, CODEPAGE='65001',
+          ROWTERMINATOR='0x0a', DATAFILETYPE='char', MAXERRORS=0, TABLOCK);
+
+    UPDATE dbo.os_stg_flights SET origin = NULL WHERE origin = '';
+    UPDATE dbo.os_stg_flights SET destination = NULL WHERE destination = '';
+    UPDATE dbo.os_stg_flights SET aircraft_uid = NULL WHERE aircraft_uid = '';
+    UPDATE dbo.os_stg_flights SET typecode = NULL WHERE typecode = '';
+
+END TRY
+BEGIN CATCH
+    PRINT '=============================================================';
+    PRINT 'ERROR CRÍTICO EN LA CARGA DE ARCHIVOS CSV (BULK INSERT)';
+    PRINT 'Verifica que la carpeta C:\datos_dw\ exista y tenga los archivos.';
+    PRINT 'Mensaje técnico: ' + ERROR_MESSAGE();
+    PRINT '=============================================================';
+END CATCH;
 GO
 
 /* ---------- DEDUP POST-CARGA (B-24): una copia por llave natural ---------- */
