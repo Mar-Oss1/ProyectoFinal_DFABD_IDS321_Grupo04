@@ -35,6 +35,10 @@
       <Name>Dim Aeropuerto.dim</Name>
       <FullPath>Dim Aeropuerto.dim</FullPath>
     </ProjectItem>
+    <ProjectItem>
+      <Name>Dim Hora.dim</Name>
+      <FullPath>Dim Hora.dim</FullPath>
+    </ProjectItem>
   </Dimensions>
   <DataSources>
     <ProjectItem>
