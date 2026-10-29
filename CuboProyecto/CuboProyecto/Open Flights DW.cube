@@ -8,7 +8,7 @@
       <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:DiagramLayout</Name>
       <Value>
         <dds xmlns="">
-          <diagram fontclsid="{0BE35203-8F91-11CE-9DE3-00AA004BB851}" mouseiconclsid="{0BE35204-8F91-11CE-9DE3-00AA004BB851}" defaultlayout="MSDDS.Rectilinear" defaultlineroute="MSDDS.Rectilinear" version="7" nextobject="26" scale="100" pagebreakanchorx="0" pagebreakanchory="0" pagebreaksizex="0" pagebreaksizey="0" scrollleft="-6428" scrolltop="3071" gridx="150" gridy="150" marginx="5000" marginy="5000" zoom="75" x="29792" y="17489" backcolor="2039583" defaultpersistence="2" PrintPageNumbersMode="3" PrintMarginTop="0" PrintMarginBottom="635" PrintMarginLeft="0" PrintMarginRight="0" marqueeselectionmode="0" mousepointer="0" snaptogrid="0" autotypeannotation="1" showscrollbars="1" viewpagebreaks="0" donotforceconnectorsbehindshapes="1" backpictureclsid="{00000000-0000-0000-0000-000000000000}">
+          <diagram fontclsid="{0BE35203-8F91-11CE-9DE3-00AA004BB851}" mouseiconclsid="{0BE35204-8F91-11CE-9DE3-00AA004BB851}" defaultlayout="MSDDS.Rectilinear" defaultlineroute="MSDDS.Rectilinear" version="7" nextobject="26" scale="100" pagebreakanchorx="0" pagebreakanchory="0" pagebreaksizex="0" pagebreaksizey="0" scrollleft="-6428" scrolltop="-421" gridx="150" gridy="150" marginx="5000" marginy="5000" zoom="75" x="29792" y="17489" backcolor="2039583" defaultpersistence="2" PrintPageNumbersMode="3" PrintMarginTop="0" PrintMarginBottom="635" PrintMarginLeft="0" PrintMarginRight="0" marqueeselectionmode="0" mousepointer="0" snaptogrid="0" autotypeannotation="1" showscrollbars="1" viewpagebreaks="0" donotforceconnectorsbehindshapes="1" backpictureclsid="{00000000-0000-0000-0000-000000000000}">
             <font>
               <ddsxmlobjectstreamwrapper binary="01000000900144420100065461686f6d61" />
             </font>
@@ -218,7 +218,7 @@
     </Annotation>
     <Annotation>
       <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:DiagramViewPortTop</Name>
-      <Value>3071</Value>
+      <Value>-421</Value>
     </Annotation>
     <Annotation>
       <Name>http://schemas.microsoft.com/DataWarehouse/Designer/1.0:DiagramBoundingLeft</Name>
@@ -753,6 +753,30 @@ CREATE MEMBER CURRENTCUBE.[Measures].[Ingreso Estimado por Vuelo]
  AS IIF([Measures].[Cantidad Vuelos] = 0, NULL,
     [Measures].[Ingreso Estimado USD] / [Measures].[Cantidad Vuelos]), 
 FORMAT_STRING = "Currency", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Fact Vuelos'  ; 
+CREATE MEMBER CURRENTCUBE.[Measures].[% Origen No Identificado]
+ AS IIF([Measures].[Cantidad Vuelos] = 0, NULL,
+    ([Measures].[Cantidad Vuelos], [Aeropuerto Origen].[Aeropuerto Key].&amp;[-1])
+    / [Measures].[Cantidad Vuelos]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Fact Vuelos'  ; 
+CREATE MEMBER CURRENTCUBE.[Measures].[% Destino No Identificado]
+ AS IIF([Measures].[Cantidad Vuelos] = 0, NULL,
+    ([Measures].[Cantidad Vuelos], [Aeropuerto Destino].[Aeropuerto Key].&amp;[-1])
+    / [Measures].[Cantidad Vuelos]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Fact Vuelos'  ; 
+CREATE MEMBER CURRENTCUBE.[Measures].[% Aerolinea No Identificada]
+ AS IIF([Measures].[Cantidad Vuelos] = 0, NULL,
+    ([Measures].[Cantidad Vuelos], [Dim Aerolinea].[Aerolinea Key].&amp;[-1])
+    / [Measures].[Cantidad Vuelos]), 
+FORMAT_STRING = "Percent", 
+VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Fact Vuelos'  ; 
+CREATE MEMBER CURRENTCUBE.[Measures].[% Avion No Identificado]
+ AS IIF([Measures].[Cantidad Vuelos] = 0, NULL,
+    ([Measures].[Cantidad Vuelos], [Dim Avion].[Avion Key].&amp;[-1])
+    / [Measures].[Cantidad Vuelos]), 
+FORMAT_STRING = "Percent", 
 VISIBLE = 1 ,  ASSOCIATED_MEASURE_GROUP = 'Fact Vuelos'  ;  
 CREATE MEMBER CURRENTCUBE.[Measures].[Distancia Promedio Km]
  AS IIF([Measures].[Cantidad Vuelos] = 0, NULL,
