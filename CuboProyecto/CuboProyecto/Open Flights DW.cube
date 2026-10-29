@@ -843,7 +843,35 @@ VISIBLE = 1 , ASSOCIATED_MEASURE_GROUP = 'Fact Vuelos'; </Text>
       ELSE -1
   END</Status>
       <TrendGraphic>Standard Arrow</TrendGraphic>
-      <StatusGraphic>Gauge - Ascending</StatusGraphic>
+      <StatusGraphic>Traffic Light</StatusGraphic>
+    </Kpi>
+    <Kpi dwd:design-time-name="4eb300cc-05f6-4743-9a20-87bff94717fe">
+      <ID>KPI 1</ID>
+      <Name>Identificacion Aeropuertos</Name>
+      <AssociatedMeasureGroupID>Fact Vuelos</AssociatedMeasureGroupID>
+      <Value>1 - [% Origen No Identificado]</Value>
+      <Goal>0.95</Goal>
+      <Status>   CASE
+       WHEN KPIVALUE("Identificacion Aeropuertos") &gt;= KPIGOAL("Identificacion Aeropuertos") THEN 1
+       WHEN KPIVALUE("Identificacion Aeropuertos") &gt;= KPIGOAL("Identificacion Aeropuertos") * 0.8 THEN 0
+       ELSE -1
+   END</Status>
+      <TrendGraphic>Standard Arrow</TrendGraphic>
+      <StatusGraphic>Traffic Light</StatusGraphic>
+    </Kpi>
+    <Kpi dwd:design-time-name="f4ecc697-a742-4c60-82b9-f1ca831a1da8">
+      <ID>KPI 2</ID>
+      <Name>Identificacion Aerolineas</Name>
+      <AssociatedMeasureGroupID>Fact Vuelos</AssociatedMeasureGroupID>
+      <Value>1 - [% Aerolinea No Identificada]</Value>
+      <Goal>0.70</Goal>
+      <Status>CASE
+    WHEN KPIVALUE("Identificacion Aerolineas") &gt;= KPIGOAL("Identificacion Aerolineas") THEN 1
+    WHEN KPIVALUE("Identificacion Aerolineas") &gt;= KPIGOAL("Identificacion Aerolineas") * 0.8 THEN 0
+    ELSE -1
+END</Status>
+      <TrendGraphic>Standard Arrow</TrendGraphic>
+      <StatusGraphic>Traffic Light</StatusGraphic>
     </Kpi>
   </Kpis>
 </Cube>
