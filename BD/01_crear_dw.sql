@@ -34,11 +34,26 @@ BEGIN
                   'Enero','Febrero','Marzo','Abril','Mayo','Junio',
                   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'),
            DAY(DATEADD(DAY,i,'2019-01-01')),
-           CHOOSE(DATEPART(WEEKDAY, DATEADD(DAY,i,'2019-01-01')),
-                  'Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'),
-           CASE WHEN DATEPART(WEEKDAY, DATEADD(DAY,i,'2019-01-01')) IN (1,7) THEN 1 ELSE 0 END
+           /* Día de la semana sin DATEPART(WEEKDAY): ese depende de @@DATEFIRST
+              (idioma del login) y con login en español corre todos los nombres.
+              1900-01-01 fue lunes -> (días desde esa fecha % 7) + 1 = 1 lunes ... 7 domingo */
+           CHOOSE((DATEDIFF(DAY,'19000101',DATEADD(DAY,i,'2019-01-01')) % 7) + 1,
+                  'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'),
+           CASE WHEN (DATEDIFF(DAY,'19000101',DATEADD(DAY,i,'2019-01-01')) % 7) + 1 IN (6,7) THEN 1 ELSE 0 END
     FROM n;
 END
+GO
+
+/* DiaSemana: número ISO del día (1 = lunes ... 7 = domingo) para ORDENAR NombreDia en
+   el cubo (si no, SSAS ordena alfabético). Misma fórmula independiente de @@DATEFIRST.
+   En PostgreSQL equivale a EXTRACT(ISODOW FROM fecha).
+   ALTER aparte con guarda: el CREATE de DimFecha no se re-ejecuta en una base existente. */
+IF COL_LENGTH('dbo.DimFecha', 'DiaSemana') IS NULL
+    ALTER TABLE dbo.DimFecha ADD DiaSemana TINYINT NULL;
+GO
+UPDATE dbo.DimFecha
+SET DiaSemana = (DATEDIFF(DAY, '19000101', Fecha) % 7) + 1
+WHERE DiaSemana IS NULL;
 GO
 
 /* DimAeropuerto: maestro OurAirports + complemento OpenFlights */
@@ -121,6 +136,31 @@ CREATE TABLE dbo.FactVuelos (
 );
 GO
 
+/* DimHora: dimensión estructural de 24 horas (UTC), generada igual que DimFecha.
+   HoraSalida del hecho es DATEPART(HOUR, PrimeraVista) y PrimeraVista viene de
+   OpenSky en UTC, por eso la etiqueta dice UTC y no hora local.
+   La FK va con ALTER aparte porque el CREATE de FactVuelos tiene guarda y no se
+   re-ejecuta en una base que ya existe. */
+IF OBJECT_ID('dbo.DimHora') IS NULL
+CREATE TABLE dbo.DimHora (
+    Hora    TINYINT     NOT NULL PRIMARY KEY,
+    HoraUTC VARCHAR(10) NOT NULL
+);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM dbo.DimHora)
+INSERT INTO dbo.DimHora (Hora, HoraUTC)
+SELECT h.Hora, RIGHT('0' + CAST(h.Hora AS VARCHAR(2)), 2) + ':00 UTC'
+FROM (VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),
+             (12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23)) AS h(Hora);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_FactVuelos_DimHora')
+ALTER TABLE dbo.FactVuelos
+    ADD CONSTRAINT FK_FactVuelos_DimHora
+    FOREIGN KEY (HoraSalida) REFERENCES dbo.DimHora(Hora);
+GO
+
 /* Crosswalk de rutas: pares ICAO ofertados (equi-join rápido para EsRutaOfertada) */
 IF OBJECT_ID('dbo.xw_rutas_icao') IS NULL
 CREATE TABLE dbo.xw_rutas_icao (
@@ -170,8 +210,9 @@ BEGIN
 END
 GO
 
-/* ---------- Chequeos post-creación (esperado: 731/1/1/1/0/0/0) ---------- */
+/* ---------- Chequeos post-creación (esperado: 731/24/1/1/1/0/0/0) ---------- */
 SELECT (SELECT COUNT(*) FROM dbo.DimFecha)      AS dim_fecha,
+       (SELECT COUNT(*) FROM dbo.DimHora)       AS dim_hora,
        (SELECT COUNT(*) FROM dbo.DimAeropuerto) AS dim_aeropuerto,
        (SELECT COUNT(*) FROM dbo.DimAerolinea)  AS dim_aerolinea,
        (SELECT COUNT(*) FROM dbo.DimAvion)      AS dim_avion,
