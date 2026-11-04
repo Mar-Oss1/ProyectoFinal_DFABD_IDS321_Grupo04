@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Package"
   DTS:PackageType="5"
-  DTS:VersionBuild="63"
-  DTS:VersionGUID="{3967FF23-D450-48EA-8099-067E78A3BEE2}">
+  DTS:VersionBuild="65"
+  DTS:VersionGUID="{13B094C8-D710-4C45-89FA-D9A34147E3EE}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -124,7 +124,7 @@ where [refTable].[BK_AirlineID] = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].Columns[airline_id]};</property>
+                  name="ParameterMap">#{Package\DF_DimAerolinea\71:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -283,7 +283,7 @@ where [refTable].[BK_AirlineID] = ?</property>
                     <inputColumn
                       refId="Package\DF_DimAerolinea\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[alias]"
                       cachedDataType="wstr"
-                      cachedLength="60"
+                      cachedLength="4000"
                       cachedName="alias"
                       externalMetadataColumnId="Package\DF_DimAerolinea\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Alias]"
                       lineageId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].Columns[alias]" />
@@ -322,14 +322,14 @@ where [refTable].[BK_AirlineID] = ?</property>
                     <inputColumn
                       refId="Package\DF_DimAerolinea\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[country]"
                       cachedDataType="wstr"
-                      cachedLength="100"
+                      cachedLength="4000"
                       cachedName="country"
                       externalMetadataColumnId="Package\DF_DimAerolinea\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Pais]"
                       lineageId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].Columns[country]" />
                     <inputColumn
                       refId="Package\DF_DimAerolinea\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[name]"
                       cachedDataType="wstr"
-                      cachedLength="150"
+                      cachedLength="4000"
                       cachedName="name"
                       externalMetadataColumnId="Package\DF_DimAerolinea\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Nombre]"
                       lineageId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].Columns[name]" />
@@ -451,24 +451,26 @@ where [refTable].[BK_AirlineID] = ?</property>
        CASE WHEN LTRIM(RTRIM(country)) IN ('', '\N') OR country IS NULL THEN 'Sin Pais' ELSE country END AS country, 
        activa
 FROM (
-    SELECT airline_id, name, alias,
-           CAST(iata AS VARCHAR(5))      AS iata,
-           CAST(CASE WHEN LTRIM(RTRIM(icao)) LIKE '[A-Z0-9][A-Z0-9][A-Z0-9]'
-                       OR LTRIM(RTRIM(icao)) LIKE '[A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9]'
-                     THEN LTRIM(RTRIM(icao)) END AS VARCHAR(4)) AS icao,
-           CAST(callsign AS VARCHAR(50)) AS callsign,
-           country,
+    SELECT airline_id, 
+           REPLACE(name, CHAR(27), '') AS name, 
+           REPLACE(alias, CHAR(27), '') AS alias,
+           CAST(REPLACE(iata, CHAR(27), '') AS VARCHAR(5)) AS iata,
+           CAST(CASE WHEN LTRIM(RTRIM(REPLACE(icao, CHAR(27), ''))) LIKE '[A-Z0-9][A-Z0-9][A-Z0-9]'
+                       OR LTRIM(RTRIM(REPLACE(icao, CHAR(27), ''))) LIKE '[A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9]'
+                     THEN LTRIM(RTRIM(REPLACE(icao, CHAR(27), ''))) END AS VARCHAR(4)) AS icao,
+           CAST(REPLACE(callsign, CHAR(27), '') AS VARCHAR(50)) AS callsign,
+           REPLACE(country, CHAR(27), '') AS country,
            CASE WHEN active = 1 THEN 'Si' WHEN active = 0 THEN 'No' ELSE 'ND' END AS activa,
            ROW_NUMBER() OVER (
                PARTITION BY COALESCE(
-                   CASE WHEN LTRIM(RTRIM(icao)) LIKE '[A-Z0-9][A-Z0-9][A-Z0-9]'
-                         OR LTRIM(RTRIM(icao)) LIKE '[A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9]'
-                        THEN LTRIM(RTRIM(icao)) END,
+                   CASE WHEN LTRIM(RTRIM(REPLACE(icao, CHAR(27), ''))) LIKE '[A-Z0-9][A-Z0-9][A-Z0-9]'
+                         OR LTRIM(RTRIM(REPLACE(icao, CHAR(27), ''))) LIKE '[A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9]'
+                        THEN LTRIM(RTRIM(REPLACE(icao, CHAR(27), ''))) END,
                    'NK-' + CAST(airline_id AS VARCHAR(10)))
                ORDER BY airline_id) AS rn
     FROM dbo.airlines
 ) x
-WHERE x.rn = 1</property>
+WHERE x.rn = 1;</property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -519,7 +521,7 @@ WHERE x.rn = 1</property>
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
                       externalMetadataColumnId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[name]"
-                      length="150"
+                      length="4000"
                       lineageId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].Columns[name]"
                       name="name"
                       truncationRowDisposition="FailComponent" />
@@ -529,7 +531,7 @@ WHERE x.rn = 1</property>
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
                       externalMetadataColumnId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[alias]"
-                      length="60"
+                      length="4000"
                       lineageId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].Columns[alias]"
                       name="alias"
                       truncationRowDisposition="FailComponent" />
@@ -572,7 +574,7 @@ WHERE x.rn = 1</property>
                       errorOrTruncationOperation="Conversion"
                       errorRowDisposition="FailComponent"
                       externalMetadataColumnId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[country]"
-                      length="100"
+                      length="4000"
                       lineageId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].Columns[country]"
                       name="country"
                       truncationRowDisposition="FailComponent" />
@@ -597,12 +599,12 @@ WHERE x.rn = 1</property>
                     <externalMetadataColumn
                       refId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[name]"
                       dataType="wstr"
-                      length="150"
+                      length="4000"
                       name="name" />
                     <externalMetadataColumn
                       refId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[alias]"
                       dataType="wstr"
-                      length="60"
+                      length="4000"
                       name="alias" />
                     <externalMetadataColumn
                       refId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[iata]"
@@ -625,7 +627,7 @@ WHERE x.rn = 1</property>
                     <externalMetadataColumn
                       refId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[country]"
                       dataType="wstr"
-                      length="100"
+                      length="4000"
                       name="country" />
                     <externalMetadataColumn
                       refId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[activa]"
@@ -648,13 +650,13 @@ WHERE x.rn = 1</property>
                     <outputColumn
                       refId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[name]"
                       dataType="wstr"
-                      length="150"
+                      length="4000"
                       lineageId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[name]"
                       name="name" />
                     <outputColumn
                       refId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[alias]"
                       dataType="wstr"
-                      length="60"
+                      length="4000"
                       lineageId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[alias]"
                       name="alias" />
                     <outputColumn
@@ -681,7 +683,7 @@ WHERE x.rn = 1</property>
                     <outputColumn
                       refId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[country]"
                       dataType="wstr"
-                      length="100"
+                      length="4000"
                       lineageId="Package\DF_DimAerolinea\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[country]"
                       name="country" />
                     <outputColumn
@@ -4389,47 +4391,9 @@ GROUP BY codigo</property>
           Id="Package\DF_DimAerolinea\OLE DB Destination"
           TopLeft="265,222" />
         <NodeLayout
-          Size="150,42"
-          Id="Package\DF_DimAerolinea\OLE DB Source"
-          TopLeft="171,54" />
-        <NodeLayout
           Size="113,42"
           Id="Package\DF_DimAerolinea\Lookup"
           TopLeft="266,129" />
-        <EdgeLayout
-          Id="Package\DF_DimAerolinea.Paths[OLE DB Source Output]"
-          TopLeft="246,96">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="76.5,33"
-              Start="0,0"
-              End="76.5,25.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,12.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,12.5"
-                    Point2="0,16.5"
-                    Point3="4,16.5" />
-                  <mssgle:LineSegment
-                    End="72.5,16.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="72.5,16.5"
-                    Point2="76.5,16.5"
-                    Point3="76.5,20.5" />
-                  <mssgle:LineSegment
-                    End="76.5,25.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF_DimAerolinea.Paths[Lookup No Match Output]"
           TopLeft="322.5,171">
@@ -4466,6 +4430,44 @@ GROUP BY codigo</property>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="150,42"
+          Id="Package\DF_DimAerolinea\OLE DB Source"
+          TopLeft="283,54" />
+        <EdgeLayout
+          Id="Package\DF_DimAerolinea.Paths[OLE DB Source Output]"
+          TopLeft="358,96">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-35.5,33"
+              Start="0,0"
+              End="-35.5,25.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,12.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,12.5"
+                    Point2="0,16.5"
+                    Point3="-4,16.5" />
+                  <mssgle:LineSegment
+                    End="-31.5,16.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-31.5,16.5"
+                    Point2="-35.5,16.5"
+                    Point3="-35.5,20.5" />
+                  <mssgle:LineSegment
+                    End="-35.5,25.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
@@ -4479,14 +4481,6 @@ GROUP BY codigo</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF_DimAerolinea\OLE DB Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -5044,6 +5038,14 @@ GROUP BY codigo</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF_DimAerolinea\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
