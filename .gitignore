@@ -11,3 +11,5 @@ obj/
 BD/datos_crudos/opensky/*.gz
 BD/datos_crudos/openflights/*.dat
 *.bak
+*.rdl.data
+*.rsuser
