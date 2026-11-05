@@ -9,8 +9,8 @@
     <TargetServerVersion>SSRS2016</TargetServerVersion>
     <Platform>Win32</Platform>
     <TargetReportFolder>ProyectoFinal_Grupo4</TargetReportFolder>
-    <TargetDatasetFolder>ReportesOpenflights/Datasets</TargetDatasetFolder>
-    <TargetDatasourceFolder>ReportesOpenflights/Data Sources</TargetDatasourceFolder>
+    <TargetDatasetFolder>ProyectoFinal_Grupo4/Datasets</TargetDatasetFolder>
+    <TargetDatasourceFolder>ProyectoFinal_Grupo4/Data Sources</TargetDatasourceFolder>
     <TargetReportPartFolder>Report Parts</TargetReportPartFolder>
     <TargetServerURL>http://localhost/reportserver_kenia</TargetServerURL>
   </PropertyGroup>
