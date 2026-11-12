@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+  <name>wf_carga_dw</name>
+  <name_sync_with_filename>Y</name_sync_with_filename>
+  <description>Carga completa del DW OpenFlights en PostgreSQL (equivalente al paquete SSIS)</description>
+  <extended_description/>
+  <workflow_version/>
+  <created_user>-</created_user>
+  <created_date>2026/11/11 20:30:00.000</created_date>
+  <modified_user>-</modified_user>
+  <modified_date>2026/11/11 20:30:00.000</modified_date>
+  <parameters>
+    </parameters>
+  <actions>
+    <action>
+      <name>Start</name>
+      <description/>
+      <type>SPECIAL</type>
+      <attributes/>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>60</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <xloc>64</xloc>
+      <yloc>64</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>Cargar staging (p01)</name>
+      <description>Extraccion: CSV a stg</description>
+      <type>PIPELINE</type>
+      <attributes/>
+      <filename>${PROJECT_HOME}/p01_staging.hpl</filename>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <create_parent_folder>N</create_parent_folder>
+      <run_configuration>local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <xloc>256</xloc>
+      <yloc>64</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>10 Dedup staging</name>
+      <description>Ejecuta sql/10_dedup_staging.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/10_dedup_staging.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>448</xloc>
+      <yloc>64</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>20 Limpiar DW</name>
+      <description>Ejecuta sql/20_limpiar_dw.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/20_limpiar_dw.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>640</xloc>
+      <yloc>64</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>30 Rutas ofertadas</name>
+      <description>Ejecuta sql/30_xw_rutas.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/30_xw_rutas.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>832</xloc>
+      <yloc>64</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>40 DimAerolinea</name>
+      <description>Ejecuta sql/40_dim_aerolinea.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/40_dim_aerolinea.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>1024</xloc>
+      <yloc>64</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>50 DimAeropuerto OurAirports</name>
+      <description>Ejecuta sql/50_dim_aeropuerto_oa.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/50_dim_aeropuerto_oa.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>64</xloc>
+      <yloc>224</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>51 DimAeropuerto OpenFlights</name>
+      <description>Ejecuta sql/51_dim_aeropuerto_of.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/51_dim_aeropuerto_of.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>256</xloc>
+      <yloc>224</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>52 Enriquecer aeropuertos</name>
+      <description>Ejecuta sql/52_enriquecer_aeropuertos.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/52_enriquecer_aeropuertos.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>448</xloc>
+      <yloc>224</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>60 DimAvion</name>
+      <description>Ejecuta sql/60_dim_avion.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/60_dim_avion.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>640</xloc>
+      <yloc>224</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>70 FactVuelos</name>
+      <description>Ejecuta sql/70_fact_vuelos.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/70_fact_vuelos.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>832</xloc>
+      <yloc>224</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>80 Log de carga</name>
+      <description>Ejecuta sql/80_log_carga.sql</description>
+      <type>SQL</type>
+      <attributes/>
+      <sql/>
+      <useVariableSubstitution>F</useVariableSubstitution>
+      <sqlfromfile>T</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/80_log_carga.sql</sqlfilename>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>dw_postgres</connection>
+      <parallel>N</parallel>
+      <xloc>1024</xloc>
+      <yloc>224</yloc>
+      <attributes_hac/>
+    </action>
+  </actions>
+  <hops>
+    <hop>
+      <from>Start</from>
+      <to>Cargar staging (p01)</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Cargar staging (p01)</from>
+      <to>10 Dedup staging</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>10 Dedup staging</from>
+      <to>20 Limpiar DW</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>20 Limpiar DW</from>
+      <to>30 Rutas ofertadas</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>30 Rutas ofertadas</from>
+      <to>40 DimAerolinea</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>40 DimAerolinea</from>
+      <to>50 DimAeropuerto OurAirports</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>50 DimAeropuerto OurAirports</from>
+      <to>51 DimAeropuerto OpenFlights</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>51 DimAeropuerto OpenFlights</from>
+      <to>52 Enriquecer aeropuertos</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>52 Enriquecer aeropuertos</from>
+      <to>60 DimAvion</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>60 DimAvion</from>
+      <to>70 FactVuelos</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>70 FactVuelos</from>
+      <to>80 Log de carga</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+  </hops>
+  <notepads>
+  </notepads>
+  <attributes/>
+</workflow>
