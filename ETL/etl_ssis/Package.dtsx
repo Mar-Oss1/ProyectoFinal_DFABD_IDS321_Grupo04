@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Package"
   DTS:PackageType="5"
-  DTS:VersionBuild="65"
-  DTS:VersionGUID="{13B094C8-D710-4C45-89FA-D9A34147E3EE}">
+  DTS:VersionBuild="66"
+  DTS:VersionGUID="{0C3DDD28-D221-4BC4-969D-9871AD26BDA8}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -4050,7 +4050,7 @@ GROUP BY codigo</property>
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0F57EC16-C933-484A-B70C-E96F37BCF62A}"
-          SQLTask:SqlStatementSource="UPDATE d SET d.PaisNombre = c.name&#xA;FROM dbo.DimAeropuerto d&#xA;JOIN dbo.oa_stg_countries c ON c.code = d.CodigoPais&#xA;WHERE d.AeropuertoKey &lt;&gt; -1 AND d.PaisNombre IS NULL;&#xA;GO&#xA;&#xA;UPDATE d SET d.ZonaHoraria = fz.tz_olson,&#xA;             d.PaisNombre  = ISNULL(d.PaisNombre, pc.name)&#xA;FROM dbo.DimAeropuerto d&#xA;OUTER APPLY (SELECT TOP 1 tz_olson FROM OpenFlights.dbo.airports a WHERE a.icao = d.ICAO) fz&#xA;OUTER APPLY (SELECT TOP 1 c.name FROM OpenFlights.dbo.countries c WHERE c.iso_code = d.CodigoPais) pc&#xA;WHERE d.AeropuertoKey &lt;&gt; -1 AND (d.ZonaHoraria IS NULL OR d.PaisNombre IS NULL);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="UPDATE d SET d.PaisNombre = c.name&#xA;FROM dbo.DimAeropuerto d&#xA;JOIN dbo.oa_stg_countries c ON c.code = d.CodigoPais&#xA;WHERE d.AeropuertoKey &lt;&gt; -1 AND d.PaisNombre IS NULL;&#xA;GO&#xA;&#xA;UPDATE d SET d.ZonaHoraria = fz.tz_olson,&#xA;             d.PaisNombre  = ISNULL(d.PaisNombre, pc.name)&#xA;FROM dbo.DimAeropuerto d&#xA;OUTER APPLY (SELECT TOP 1 tz_olson FROM OpenFlights.dbo.airports a WHERE a.icao = d.ICAO) fz&#xA;OUTER APPLY (SELECT TOP 1 c.name FROM OpenFlights.dbo.countries c WHERE c.iso_code = d.CodigoPais) pc&#xA;WHERE d.AeropuertoKey &lt;&gt; -1 AND (d.ZonaHoraria IS NULL OR d.PaisNombre IS NULL);&#xA;&#xA;GO&#xA;&#xA;UPDATE d SET d.Continente = c.continent&#xA;FROM dbo.DimAeropuerto d&#xA;JOIN dbo.oa_stg_countries c ON c.code = d.CodigoPais&#xA;WHERE d.AeropuertoKey &lt;&gt; -1 AND d.Continente IS NULL;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
